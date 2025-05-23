@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Compression History</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        a { color: #06c; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>Compression History</h1>
+    <a href="/">Back to Home</a>
+    
+    <table id="history-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Original File</th>
+                <th>Compressed File</th>
+                <th>Original Size</th>
+                <th>Compressed Size</th>
+                <th>Ratio</th>
+                <th>Space Saving</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        fetch('/api/history')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.querySelector('#history-table tbody');
+                data.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.id}</td>
+                        <td>${item.original_filename}</td>
+                        <td><a href="/download/${item.compressed_filename}">${item.compressed_filename}</a></td>
+                        <td>${item.original_size} bytes</td>
+                        <td>${item.compressed_size} bytes</td>
+                        <td>${item.ratio.toFixed(2)}</td>
+                        <td>${(item.space_saving * 100).toFixed(2)}%</td>
+                        <td>${item.timestamp}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            });
+    </script>
+</body>
+</html>
